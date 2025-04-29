@@ -23,8 +23,8 @@ export class ClientService {
   create(dto: CreateClientDto) {
     const client: ClientEntity = {
       ...dto,
-      id: generateUniqueId(),
-      gender: 'male',
+      _id: generateUniqueId(),
+      name: dto.name,
       startDate: new Date(),
       nextPayment: null,
       status: 'active',
