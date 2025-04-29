@@ -2,6 +2,7 @@
 /dist
 /node_modules
 /build
+/package-lock.json
 
 # Logs
 logs
@@ -25,6 +26,7 @@ lerna-debug.log*
 .classpath
 .c9/
 *.launch
+
 .settings/
 *.sublime-workspace
 
