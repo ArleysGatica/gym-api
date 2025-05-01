@@ -59,7 +59,12 @@ export class ProductService {
     return this.repository.reduceStock(id, quantity);
   }
 
-  async getAllPaginated(skip: number, limit: number) {
-    return this.repository.findAllPaginated(skip, limit);
+  async getAllPaginated(
+    skip: number,
+    limit: number,
+    search?: string,
+    category?: string,
+  ) {
+    return this.repository.findAllPaginated(skip, limit, search, category);
   }
 }
