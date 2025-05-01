@@ -81,18 +81,49 @@ export class ProductRepositoryImpl implements ProductRepository {
   async findAllPaginated(
     skip = 0,
     limit = 10,
-  ): Promise<{ data: ProductEntity[]; total: number }> {
-    skip = Number(skip) || 0;
-    limit = Number(limit) || 10;
+    search?: string,
+    category?: string,
+  ): Promise<{
+    data: ProductEntity[];
+    total: number;
+    appliedFilters: {
+      search?: string;
+      category?: string;
+      skip: number;
+      limit: number;
+    };
+  }> {
+    const filter: any = {};
 
-    const [products, total] = await Promise.all([
-      this.productModel.find().skip(skip).limit(limit).exec(),
-      this.productModel.countDocuments().exec(),
-    ]);
+    if (search) {
+      filter.name = { $regex: new RegExp(search, 'i') };
+    }
+
+    if (category) {
+      filter.category = category;
+    }
+
+    // 🔍 Traer todos los resultados que coincidan (filtro global)
+    const filtered = await this.productModel.find(filter).lean().exec();
+    const total = filtered.length;
+
+    // ⚠️ Proteger contra skip inválido
+    if (skip >= total) {
+      skip = 0;
+    }
+
+    // ✂️ Paginar en memoria
+    const paginated = filtered.slice(skip, skip + limit);
 
     return {
-      data: products.map(ProductMapper.toDomain),
+      data: paginated.map(ProductMapper.toDomain),
       total,
+      appliedFilters: {
+        search,
+        category,
+        skip,
+        limit,
+      },
     };
   }
 }
