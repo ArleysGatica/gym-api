@@ -40,7 +40,13 @@ export class ProductController {
   async getAll(@Query() query: GetProductsQueryDto) {
     const skip = Number(query.skip ?? 0);
     const limit = Number(query.limit ?? 10);
-    return this.ProductUseCase.getAllPaginated(skip, limit);
+
+    return this.ProductUseCase.getAllPaginated(
+      skip,
+      limit,
+      query.search,
+      query.category,
+    );
   }
 
   @Put(':id')

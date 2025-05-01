@@ -10,5 +10,7 @@ export interface ProductRepository {
   findAllPaginated(
     skip: number,
     limit: number,
+    search?: string,
+    category?: string,
   ): Promise<{ data: ProductEntity[]; total: number }>;
 }
