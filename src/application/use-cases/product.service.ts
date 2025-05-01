@@ -67,4 +67,8 @@ export class ProductService {
   ) {
     return this.repository.findAllPaginated(skip, limit, search, category);
   }
+
+  async delete(id: string) {
+    return this.repository.delete(id);
+  }
 }
