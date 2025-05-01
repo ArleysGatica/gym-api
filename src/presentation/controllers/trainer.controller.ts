@@ -14,7 +14,7 @@ import {
   TrainerDto,
   UpdateTrainerDto,
 } from '../dto/trainer/trainer.dto';
-import { generateUniqueId } from '../../utils/generate-unique-id';
+import { v4 as uuidv4 } from 'uuid';
 
 @ApiTags('Trainer')
 @Controller('trainer')
@@ -28,7 +28,7 @@ export class TrainerController {
   async create(@Body() trainer: TrainerDto) {
     const trainerEntity = {
       ...trainer,
-      _id: generateUniqueId(),
+      _id: uuidv4(),
       history: [],
     };
     return this.trainerService.create(trainerEntity);

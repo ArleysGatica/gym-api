@@ -8,7 +8,7 @@ import { UserRepository } from '../../domain/interfaces/user.repository';
 import { UserEntity } from '../../domain/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { generateUniqueId } from '../../utils/generate-unique-id';
+import { v4 as uuidv4 } from 'uuid';
 import { LOGIN_REPOSITORY } from '../../presentation/tokens/tokens';
 import { RegisterDto } from '../../presentation/dto/auth/login.dto';
 
@@ -33,7 +33,7 @@ export class AuthService {
     const newUser: UserEntity = {
       ...userDto,
       password: hashedPassword,
-      id: generateUniqueId(),
+      id: uuidv4(),
     };
 
     return this.userRepository.create(newUser);
