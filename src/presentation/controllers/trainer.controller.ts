@@ -22,7 +22,7 @@ export class TrainerController {
   constructor(private readonly trainerService: TrainerService) {}
 
   @Post('create')
-  @ApiResponse({ status: 201, description: 'JWT generado' })
+  @ApiResponse({ status: 201, description: 'Entrenador creado' })
   @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
   @Post('create')
   async create(@Body() trainer: TrainerDto) {
