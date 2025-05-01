@@ -1,12 +1,19 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { validate as isUuid } from 'uuid';
 
 @Injectable()
-export class ParseObjectIdPipe implements PipeTransform {
+export class ParseObjectIdOrUuidPipe implements PipeTransform {
   transform(value: string): string {
-    if (!Types.ObjectId.isValid(value)) {
-      throw new BadRequestException(`${value} no es un ObjectId válido`);
+    const isValidObjectId = Types.ObjectId.isValid(value);
+    const isValidUuid = isUuid(value);
+
+    if (!isValidObjectId && !isValidUuid) {
+      throw new BadRequestException(
+        `${value} no es un ObjectId ni un UUID válido`,
+      );
     }
+
     return value;
   }
 }

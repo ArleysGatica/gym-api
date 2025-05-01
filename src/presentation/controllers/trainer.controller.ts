@@ -14,7 +14,8 @@ import {
   TrainerDto,
   UpdateTrainerDto,
 } from '../dto/trainer/trainer.dto';
-import { generateUniqueId } from '../../utils/generate-unique-id';
+import { v4 as uuidv4 } from 'uuid';
+import { ParseObjectIdOrUuidPipe } from '../../common/pipes/parse-objectid.pipe';
 
 @ApiTags('Trainer')
 @Controller('trainer')
@@ -28,7 +29,7 @@ export class TrainerController {
   async create(@Body() trainer: TrainerDto) {
     const trainerEntity = {
       ...trainer,
-      _id: generateUniqueId(),
+      _id: uuidv4(),
       history: [],
     };
     return this.trainerService.create(trainerEntity);
@@ -50,14 +51,17 @@ export class TrainerController {
   @Put('update/:id')
   @ApiResponse({ status: 200, description: 'Descuento agregado' })
   @ApiResponse({ status: 404, description: 'Entrenador no encontrado' })
-  async update(@Param('id') id: string, @Body() dto: UpdateTrainerDto) {
+  async update(
+    @Param('id', ParseObjectIdOrUuidPipe) id: string,
+    @Body() dto: UpdateTrainerDto,
+  ) {
     return this.trainerService.update(id, dto);
   }
 
   @Delete('delete/:id')
   @ApiResponse({ status: 200, description: 'Entrenador eliminado' })
   @ApiResponse({ status: 404, description: 'Entrenador no encontrado' })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseObjectIdOrUuidPipe) id: string) {
     return this.trainerService.delete(id);
   }
 }

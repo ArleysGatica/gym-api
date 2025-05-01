@@ -13,6 +13,7 @@ import { AuthService } from '../../application/use-cases/auth.service';
 
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { LoginDto, RegisterDto, UpdateDto } from '../dto/auth/login.dto';
+import { ParseObjectIdOrUuidPipe } from '../../common/pipes/parse-objectid.pipe';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -52,7 +53,7 @@ export class AuthController {
   @Delete('delete/:id')
   @ApiResponse({ status: 200, description: 'Usuario eliminado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseObjectIdOrUuidPipe) id: string) {
     const user = await this.authService.findById(id);
     console.log(user.id === id);
     if (!user) {
@@ -65,7 +66,10 @@ export class AuthController {
   @Put('update/:id')
   @ApiResponse({ status: 200, description: 'Usuario actualizado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  async update(@Param('id') id: string, @Body() user: UpdateDto) {
+  async update(
+    @Param('id', ParseObjectIdOrUuidPipe) id: string,
+    @Body() user: UpdateDto,
+  ) {
     const userEntity = await this.authService.findById(id);
     if (!userEntity) {
       throw new NotFoundException('Usuario no encontrado');

@@ -8,7 +8,7 @@ import { ProductRepository } from '../../domain/interfaces/product.repository';
 import { PRODUCT_REPOSITORY } from '../../presentation/tokens/tokens';
 import { ProductEntity } from '../../domain/entities/product.entity';
 import { CreateProductDto } from '../../presentation/dto/product/product.dto';
-import { generateUniqueId } from '../../utils/generate-unique-id';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ProductService {
@@ -29,7 +29,7 @@ export class ProductService {
 
     const product: ProductEntity = {
       ...data,
-      _id: generateUniqueId(),
+      _id: uuidv4(),
     };
     return this.repository.create(product);
   }
@@ -66,5 +66,9 @@ export class ProductService {
     category?: string,
   ) {
     return this.repository.findAllPaginated(skip, limit, search, category);
+  }
+
+  async delete(id: string) {
+    return this.repository.delete(id);
   }
 }

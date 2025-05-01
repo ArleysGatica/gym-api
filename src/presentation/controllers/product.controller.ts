@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -16,6 +17,7 @@ import {
   UpdateProductDto,
 } from '../dto/product/product.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { ParseObjectIdOrUuidPipe } from '../../common/pipes/parse-objectid.pipe';
 
 @Controller('products')
 export class ProductController {
@@ -52,7 +54,10 @@ export class ProductController {
   @Put(':id')
   @ApiResponse({ status: 200, description: 'Producto actualizado' })
   @ApiResponse({ status: 404, description: 'Producto no encontrado' })
-  async update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
+  async update(
+    @Param('id', ParseObjectIdOrUuidPipe) id: string,
+    @Body() dto: UpdateProductDto,
+  ) {
     return this.ProductUseCase.update(id, dto);
   }
 
@@ -61,5 +66,12 @@ export class ProductController {
   @ApiResponse({ status: 404, description: 'Producto no encontrado' })
   async sell(@Body() dto: SellProductDto) {
     return this.ProductUseCase.sellProduct(dto.productId, dto.quantity);
+  }
+
+  @Delete(':id')
+  @ApiResponse({ status: 200, description: 'Producto eliminado' })
+  @ApiResponse({ status: 404, description: 'Producto no encontrado' })
+  async delete(@Param('id', ParseObjectIdOrUuidPipe) id: string) {
+    return this.ProductUseCase.delete(id);
   }
 }
