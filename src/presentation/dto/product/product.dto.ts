@@ -1,5 +1,11 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { IsOptional, IsPositive, Min, IsMongoId } from 'class-validator';
+import {
+  IsOptional,
+  IsPositive,
+  Min,
+  IsMongoId,
+  IsString,
+} from 'class-validator';
 
 export class CreateProductDto {
   @ApiProperty({ description: 'The name of the product', example: 'Laptop' })
@@ -67,4 +73,24 @@ export class GetProductsQueryDto {
   @IsPositive()
   @ApiProperty({ description: 'Cantidad a maxima', example: 10 })
   limit?: number;
+
+  @IsOptional()
+  @IsString()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'Filtro por Nombre',
+    example: 'Electronics',
+    required: false,
+  })
+  search?: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'Filtro por categoria',
+    example: 'Electronics',
+    required: false,
+  })
+  category?: string;
 }
