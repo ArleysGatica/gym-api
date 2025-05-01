@@ -11,7 +11,7 @@ import { ClientService } from '../../application/use-cases/clients.service';
 import { CreateClientDto } from '../dto/create-client.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
 import { ApiTags, ApiParam } from '@nestjs/swagger';
-import { ParseObjectIdPipe } from '../../common/pipes/parse-objectid.pipe';
+import { ParseObjectIdOrUuidPipe } from '../../common/pipes/parse-objectid.pipe';
 
 @ApiTags('Clientes')
 @Controller('clients')
@@ -25,7 +25,7 @@ export class ClientController {
 
   @Get(':id')
   @ApiParam({ name: 'id', description: 'ID del cliente' })
-  findById(@Param('id', ParseObjectIdPipe) id: string) {
+  findById(@Param('id', ParseObjectIdOrUuidPipe) id: string) {
     return this.clientService.findById(id);
   }
 
@@ -36,14 +36,14 @@ export class ClientController {
 
   @Put(':id')
   update(
-    @Param('id', ParseObjectIdPipe) id: string,
+    @Param('id', ParseObjectIdOrUuidPipe) id: string,
     @Body() dto: UpdateClientDto,
   ) {
     return this.clientService.update(id, dto);
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseObjectIdPipe) id: string) {
+  delete(@Param('id', ParseObjectIdOrUuidPipe) id: string) {
     return this.clientService.delete(id);
   }
 }
