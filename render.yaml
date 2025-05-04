@@ -4,9 +4,9 @@ services:
     env: node
     plan: free
     branch: main
-    buildCommand: npm run build
-    startCommand: npm run start:prod
     rootDir: .
+    buildCommand: npm install --include=dev && npx nest build
+    startCommand: npm run start:prod
     envVars:
       - key: MONGO_URI
         sync: false
