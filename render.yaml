@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: backend-gym
+    env: node
+    plan: free
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    rootDir: .
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: MONGO_LOCAL_URI
+        sync: false
+      - key: MONGO_DB_NAME
+        value: gymdb
+      - key: NODE_ENV
+        value: development
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 1h
