@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as express from 'express';
+import { AppModule } from './app.module';
 
 const expressApp = express();
 
-export async function createNestApplication() {
+async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
 
   app.enableCors();
@@ -30,7 +30,9 @@ export async function createNestApplication() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  return app;
+  await app.init();
 }
 
-export { expressApp };
+bootstrap();
+
+module.exports = expressApp;
