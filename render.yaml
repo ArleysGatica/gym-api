@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     branch: main
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: npm run build
+    startCommand: npm run start:prod
     rootDir: .
     envVars:
       - key: MONGO_URI
@@ -15,7 +15,7 @@ services:
       - key: MONGO_DB_NAME
         value: gymdb
       - key: NODE_ENV
-        value: development
+        value: production
       - key: JWT_SECRET
         sync: false
       - key: JWT_EXPIRES_IN

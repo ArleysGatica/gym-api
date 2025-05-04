@@ -5,11 +5,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // ✅ Permitir cualquier origen (CORS abierto)
+  app.enableCors();
+
+  // ✅ Configurar Swagger con JWT
   const config = new DocumentBuilder()
     .setTitle('Gym API')
-    .setDescription(
-      'API para gestión de clientes, productos, entrenadores y pagos',
-    )
+    .setDescription('API para gestión de clientes, productos, entrenadores y pagos')
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -24,8 +26,10 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // http://localhost:3000/api
+  SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`🚀 Servidor corriendo en http://localhost:${port}/api`);
 }
 bootstrap();
