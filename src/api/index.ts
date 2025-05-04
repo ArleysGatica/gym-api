@@ -1,21 +1,34 @@
-// import { createNestApplication } from '../src/main'; // importa tu boostrap principal
-import { Callback, Context, Handler } from 'aws-lambda';
-import { createServer, proxy } from 'aws-serverless-express';
-import { createNestApplication } from '../main';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as express from 'express';
+import { AppModule } from '../app.module';
 
-let cachedServer: any;
+const expressApp = express();
 
-async function bootstrapServer() {
-  if (!cachedServer) {
-    const app = await createNestApplication();
-    await app.init();
-    const expressApp = app.getHttpAdapter().getInstance();
-    cachedServer = createServer(expressApp);
-  }
-  return cachedServer;
+export async function createNestApplication() {
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+
+  app.enableCors();
+
+  const config = new DocumentBuilder()
+    .setTitle('Gym API')
+    .setDescription('API para gestión de clientes, productos, entrenadores y pagos')
+    .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        in: 'header',
+      },
+      'access-token',
+    )
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  return app;
 }
-
-export const handler: Handler = async (event: any, context: Context, callback: Callback) => {
-  const server = await bootstrapServer();
-  return proxy(server, event, context, 'PROMISE').promise;
-};

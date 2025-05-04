@@ -1,19 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as express from 'express';
+
+const expressApp = express();
 
 export async function createNestApplication() {
-  const app = await NestFactory.create(AppModule);
-  return app;
-}
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  // ✅ Permitir cualquier origen (CORS abierto)
   app.enableCors();
 
-  // ✅ Configurar Swagger con JWT
   const config = new DocumentBuilder()
     .setTitle('Gym API')
     .setDescription('API para gestión de clientes, productos, entrenadores y pagos')
@@ -33,8 +30,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  console.log(`🚀 Servidor corriendo en http://localhost:${port}/api`);
+  return app;
 }
-bootstrap();
+
+export { expressApp };
