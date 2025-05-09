@@ -1,23 +1,10 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Param,
-  Body,
-  Put,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, Put, Delete } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { TrainerService } from '../../application/use-cases/trainer.service';
-import {
-  AddDiscountDto,
-  TrainerDto,
-  UpdateTrainerDto,
-} from '../dto/trainer/trainer.dto';
+import { AddDiscountDto, TrainerDto, UpdateTrainerDto } from '../dto/trainer/trainer.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { ParseObjectIdOrUuidPipe } from '../../common/pipes/parse-objectid.pipe';
 
-@ApiTags('Trainer')
 @Controller('trainer')
 export class TrainerController {
   constructor(private readonly trainerService: TrainerService) {}
@@ -51,10 +38,7 @@ export class TrainerController {
   @Put('update/:id')
   @ApiResponse({ status: 200, description: 'Descuento agregado' })
   @ApiResponse({ status: 404, description: 'Entrenador no encontrado' })
-  async update(
-    @Param('id', ParseObjectIdOrUuidPipe) id: string,
-    @Body() dto: UpdateTrainerDto,
-  ) {
+  async update(@Param('id', ParseObjectIdOrUuidPipe) id: string, @Body() dto: UpdateTrainerDto) {
     return this.trainerService.update(id, dto);
   }
 
