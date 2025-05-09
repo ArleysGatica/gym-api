@@ -1,5 +1,5 @@
-import { Controller, Post, Get, Param, Body, Put, Delete } from '@nestjs/common';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { Controller, Post, Get, Param, Body, Put, Delete, NotFoundException } from '@nestjs/common';
+import { ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { TrainerService } from '../../application/use-cases/trainer.service';
 import { AddDiscountDto, TrainerDto, UpdateTrainerDto } from '../dto/trainer/trainer.dto';
 import { v4 as uuidv4 } from 'uuid';
@@ -47,5 +47,20 @@ export class TrainerController {
   @ApiResponse({ status: 404, description: 'Entrenador no encontrado' })
   async delete(@Param('id', ParseObjectIdOrUuidPipe) id: string) {
     return this.trainerService.delete(id);
+  }
+
+  @Post(':id/payroll')
+  @ApiResponse({ status: 200, description: 'Entrenador pagado' })
+  @ApiResponse({ status: 404, description: 'Entrenador no encontrado' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID del entrenador',
+    type: String,
+    example: '663c8fddc84c9f0b90a5e413',
+  })
+  async payroll(@Param('id', ParseObjectIdOrUuidPipe) id: string) {
+    const result = await this.trainerService.payroll(id);
+    if (!result) throw new NotFoundException('Entrenador no encontrado');
+    return { message: 'Payroll processed successfully', trainer: result };
   }
 }

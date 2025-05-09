@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { TrainerRepository } from '../../domain/interfaces/trainer.repository';
 import { TrainerEntity } from '../../domain/entities/trainer.entity';
 import { TRAINER_REPOSITORY } from '../../presentation/tokens/tokens';
@@ -60,5 +60,17 @@ export class TrainerService {
       history: newHistory,
       netSalary: newNetSalary,
     });
+  }
+
+  async payroll(id: string): Promise<TrainerEntity> {
+    const trainer = await this.repository.findById(id);
+    if (!trainer) throw new NotFoundException('Trainer not found');
+
+    const updatedTrainer: Partial<TrainerEntity> = {
+      netSalary: trainer.baseSalary,
+      history: [],
+    };
+
+    return this.repository.update(id, updatedTrainer);
   }
 }
