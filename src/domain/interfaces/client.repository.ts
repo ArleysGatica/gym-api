@@ -6,4 +6,5 @@ export interface ClientRepository {
   create(client: ClientEntity): Promise<ClientEntity>;
   update(id: string, client: Partial<ClientEntity>): Promise<ClientEntity>;
   delete(id: string): Promise<any>;
+  findAllPaginated(skip: number, limit: number, search?: string): Promise<{ data: ClientEntity[]; total: number }>;
 }

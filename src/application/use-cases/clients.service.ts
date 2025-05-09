@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { ClientRepository } from '../../domain/interfaces/client.repository';
 import { ClientEntity } from '../../domain/entities/client.entity';
 import { CLIENT_REPOSITORY } from '../../presentation/tokens/tokens';
@@ -24,7 +24,7 @@ export class ClientService {
     const isDuplicate = existingClient.some((client) => client.name.toLowerCase() === dto.name.toLowerCase());
 
     if (isDuplicate) {
-      throw new Error('El cliente ya existe');
+      throw new ConflictException('El cliente ya existe');
     }
 
     const client: ClientEntity = {
@@ -43,5 +43,9 @@ export class ClientService {
 
   delete(id: string) {
     return this.repository.delete(id);
+  }
+
+  async getAllPaginated(skip: number, limit: number, search?: string) {
+    return this.repository.findAllPaginated(skip, limit, search);
   }
 }

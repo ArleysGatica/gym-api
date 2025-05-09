@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsMongoId, IsString, IsNumber, IsDate } from 'class-validator';
+import { IsOptional, IsMongoId, IsString, IsNumber, IsDate, IsPositive, Min } from 'class-validator';
 
 export class CreateClientDto {
   @ApiProperty({ example: 'Arleys', description: 'Nombre del cliente' })
@@ -23,4 +23,27 @@ export class CreateClientDto {
   @IsOptional()
   @ApiProperty({ example: '2023-01-01', description: 'Fecha de vencimiento del pago' })
   nextPayment: Date;
+}
+
+export class GetClientsQueryDto {
+  @IsOptional()
+  @Min(0)
+  @ApiProperty({ description: 'Cantidad a minima', example: 1 })
+  skip?: number;
+
+  @IsOptional()
+  @IsPositive()
+  @ApiProperty({ description: 'Cantidad a maxima', example: 10 })
+  limit?: number;
+
+  @IsOptional()
+  @IsString()
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'Filtro por Nombre',
+    example: 'Electronics',
+    required: false,
+  })
+  search?: string;
 }

@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post, Put, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Delete, Query } from '@nestjs/common';
 import { ClientService } from '../../application/use-cases/clients.service';
-import { CreateClientDto } from '../dto/create-client.dto';
+import { CreateClientDto, GetClientsQueryDto } from '../dto/create-client.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { ParseObjectIdOrUuidPipe } from '../../common/pipes/parse-objectid.pipe';
@@ -26,9 +26,13 @@ export class ClientController {
     return this.clientService.create(c);
   }
 
-  @Get()
-  findAll() {
-    return this.clientService.findAll();
+  @Get('getAllPaginated')
+  @ApiResponse({ status: 200, description: 'Lista de clientes' })
+  async getAll(@Query() query: GetClientsQueryDto) {
+    const skip = Number(query.skip ?? 0);
+    const limit = Number(query.limit ?? 10);
+
+    return this.clientService.getAllPaginated(skip, limit, query.search);
   }
 
   @Get(':id')

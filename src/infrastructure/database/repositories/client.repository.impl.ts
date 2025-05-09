@@ -39,4 +39,47 @@ export class ClientRepositoryImpl implements ClientRepository {
     if (!result) throw new NotFoundException('Cliente no encontrado');
     return result;
   }
+
+  async findAllPaginated(
+    skip = 0,
+    limit = 10,
+    search?: string,
+  ): Promise<{
+    data: ClientEntity[];
+    total: number;
+    appliedFilters: {
+      search?: string;
+      category?: string;
+      skip: number;
+      limit: number;
+    };
+  }> {
+    const filter: any = {};
+
+    if (search) {
+      filter.name = { $regex: new RegExp(search, 'i') };
+    }
+
+    // 🔍 Traer todos los resultados que coincidan (filtro global)
+    const filtered = await this.clientModel.find(filter).lean().exec();
+    const total = filtered.length;
+
+    // ⚠️ Proteger contra skip inválido
+    if (skip >= total) {
+      skip = 0;
+    }
+
+    // ✂️ Paginar en memoria
+    const paginated = filtered.slice(skip, skip + limit);
+
+    return {
+      data: paginated.map(ClientMapper.toDomain),
+      total,
+      appliedFilters: {
+        search,
+        skip,
+        limit,
+      },
+    };
+  }
 }
