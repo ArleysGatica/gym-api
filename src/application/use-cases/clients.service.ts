@@ -19,14 +19,20 @@ export class ClientService {
     return this.repository.findById(id);
   }
 
-  create(dto: CreateClientDto) {
+  async create(dto: CreateClientDto): Promise<ClientEntity> {
+    const existingClient = await this.repository.findAll();
+    const isDuplicate = existingClient.some((client) => client.name.toLowerCase() === dto.name.toLowerCase());
+
+    if (isDuplicate) {
+      throw new Error('El cliente ya existe');
+    }
+
     const client: ClientEntity = {
       ...dto,
       _id: uuidv4(),
-      name: dto.name,
-      startDate: new Date(),
-      nextPayment: null,
       status: 'active',
+      daysOverdue: 0,
+      daysRemaining: 30,
     };
     return this.repository.create(client);
   }
