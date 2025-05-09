@@ -1,85 +1,81 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🏋️‍♂️ Gym API – API Modular con NestJS + Arquitectura Limpia
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Una API RESTful profesional para la gestión de gimnasios, construida con [NestJS](https://nestjs.com/) y estructurada bajo los principios de **Clean Architecture** y **Domain-Driven Design (DDD)**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este proyecto está diseñado para ser **escalable, testeable y mantenible**, ideal para entornos productivos.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🔍 Objetivo del Proyecto
 
-## Project setup
+- Ofrecer una arquitectura limpia aplicando las mejores prácticas del desarrollo backend moderno.
+- Proveer endpoints para gestionar **clientes**, **entrenadores**, **productos** y **autenticación**.
+- Servir como base para futuros desarrollos como membresías, pagos o reservas de clases.
 
-```bash
-$ npm install
-```
+---
 
-## Compile and run the project
+## 🧠 Arquitectura del Proyecto
+
+El sistema sigue una estructura hexagonal (puertos y adaptadores), separando responsabilidades en distintas capas:
+
+| Capa             | Responsabilidad principal                                  |
+|------------------|-------------------------------------------------------------|
+| **Domain**       | Entidades del negocio y contratos (interfaces de repos)     |
+| **Application**  | Lógica de negocio / casos de uso (servicios de aplicación)  |
+| **Infrastructure**| Conexión a BD, implementaciones concretas de repositorios  |
+| **Presentation** | Controladores, DTOs, módulos, auth, decoradores             |
+
+Esto permite un sistema desacoplado, fácil de testear y con inversión de dependencias clara.
+
+---
+
+## 📁 Estructura del Proyecto
 
 ```bash
-# development
-$ npm run start
+src/
+├── domain/             # Entidades y repositorios (interfaces)
+├── application/        # Casos de uso (servicios de aplicación)
+├── infrastructure/     # MongoDB schemas, repositorios, mappers
+├── presentation/       # Controladores, DTOs, módulos, auth, guards
+├── common/             # Pipes personalizados
+├── api/                # Punto de entrada opcional para rutas
+└── main.ts             # Punto de entrada de la app
 
-# watch mode
-$ npm run start:dev
+⚙️ Instalación y Ejecución
 
-# production mode
-$ npm run start:prod
-```
+# 1. Clonar el repositorio
+git clone https://github.com/tuusuario/gym-api.git
+cd gym-api
 
-## Run tests
+# 2. Instalar dependencias
+npm install
 
-```bash
-# unit tests
-$ npm run test
+# 3. Configurar variables de entorno
+cp .env.example .env
+# Edita .env con tu URI de MongoDB, secret de JWT, etc.
 
-# e2e tests
-$ npm run test:e2e
+# 4. Ejecutar en modo desarrollo
+npm run start:dev
 
-# test coverage
-$ npm run test:cov
-```
+🔐 Seguridad y Autenticación
+Autenticación con JWT (/auth/login)
 
-## Resources
+Protección de rutas con JwtAuthGuard y RolesGuard
 
-Check out a few resources that may come in handy when working with NestJS:
+Decoradores personalizados @Public() y @Roles()
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Validación de IDs de Mongo con ParseObjectIdPipe
 
-## Support
+📦 Configuración de Swagger
+SwaggerModule.setup('api', app, document);
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+✨ Tecnologías Usadas
+NestJS (TypeScript)
 
-## Stay in touch
+MongoDB + Mongoose
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+JWT Auth
 
-## License
+JWT Auth + Swagger
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Arquitectura Hexagonal

@@ -1,11 +1,13 @@
 export class TrainerEntity {
-  _id: string;
-  name: string;
-  position: string;
-  baseSalary: number;
-  netSalary: number;
-  history: {
-    discounts: number;
-    reason: string;
-  }[];
+  constructor(
+    public readonly _id: string,
+    public name: string,
+    public position: string,
+    public baseSalary: number,
+    public netSalary: number,
+    public history: {
+      discounts: number;
+      reason: string;
+    }[],
+  ) {}
 }

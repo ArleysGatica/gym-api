@@ -1,9 +1,14 @@
 export class ClientEntity {
-  _id: string;
-  name: string;
-  phone: string;
-  gender?: string;
-  startDate?: Date;
-  nextPayment?: Date | null;
-  status?: string;
+  constructor(
+    public readonly _id: string,
+    public name: string,
+    public phone: string,
+    public gender: string,
+    public startDate: Date,
+    public nextPayment: Date | null,
+    public status: string,
+    public daysOverdue: number,
+    public daysRemaining: number,
+    public paymentAmount: number,
+  ) {}
 }

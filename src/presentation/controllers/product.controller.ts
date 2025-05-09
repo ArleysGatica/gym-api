@@ -1,21 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ProductService } from '../../application/use-cases/product.service';
-import {
-  CreateProductDto,
-  GetProductsQueryDto,
-  SellProductDto,
-  UpdateProductDto,
-} from '../dto/product/product.dto';
+import { CreateProductDto, GetProductsQueryDto, SellProductDto, UpdateProductDto } from '../dto/product/product.dto';
 import { ApiResponse } from '@nestjs/swagger';
 import { ParseObjectIdOrUuidPipe } from '../../common/pipes/parse-objectid.pipe';
 
@@ -43,21 +28,13 @@ export class ProductController {
     const skip = Number(query.skip ?? 0);
     const limit = Number(query.limit ?? 10);
 
-    return this.ProductUseCase.getAllPaginated(
-      skip,
-      limit,
-      query.search,
-      query.category,
-    );
+    return this.ProductUseCase.getAllPaginated(skip, limit, query.search, query.category);
   }
 
   @Put(':id')
   @ApiResponse({ status: 200, description: 'Producto actualizado' })
   @ApiResponse({ status: 404, description: 'Producto no encontrado' })
-  async update(
-    @Param('id', ParseObjectIdOrUuidPipe) id: string,
-    @Body() dto: UpdateProductDto,
-  ) {
+  async update(@Param('id', ParseObjectIdOrUuidPipe) id: string, @Body() dto: UpdateProductDto) {
     return this.ProductUseCase.update(id, dto);
   }
 

@@ -4,12 +4,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TrainerService } from '../../application/use-cases/trainer.service';
 import { TRAINER_REPOSITORY } from '../tokens/tokens';
 import { TrainerRepositoryImpl } from '../../infrastructure/database/repositories/trainer.repository.impl';
-import { TrainerSchema } from '../../infrastructure/database/schemas/trainer.schema';
+import { TrainerDocument, TrainerSchema } from '../../infrastructure/database/schemas/trainer.schema';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: 'Trainer', schema: TrainerSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: TrainerDocument.name, schema: TrainerSchema }])],
   controllers: [TrainerController],
   providers: [
     TrainerService,
