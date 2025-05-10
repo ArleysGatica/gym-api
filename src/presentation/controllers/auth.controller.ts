@@ -1,83 +1,68 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Put,
-  Delete,
-  UnauthorizedException,
-  NotFoundException,
-} from '@nestjs/common';
-import { AuthService } from '../../application/use-cases/auth.service';
-
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import { LoginDto, RegisterDto, UpdateDto } from '../dto/auth/login.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put, UnauthorizedException } from '@nestjs/common';
+import { ChangePasswordDto, LoginDto, RegisterDto, UpdateDto } from '../dto/auth/login.dto';
 import { ParseObjectIdOrUuidPipe } from '../../common/pipes/parse-objectid.pipe';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { RegisterUserUseCase } from '../../application/use-cases/auth/register-user.use-case.service';
+import { ValidateUserUseCase } from '../../application/use-cases/auth/validate-user.use-case.service';
+import { LoginUserUseCase } from '../../application/use-cases/auth/login-user.use-case.service';
+import { UpdateUserUseCase } from '../../application/use-cases/auth/update-user.use-case.service';
+import { DeleteUserUseCase } from '../../application/use-cases/auth/delete-user.use-case.service';
+import { ChangePasswordUseCase } from '../../application/use-cases/auth/change-password.use-case.service';
+import { FindAllUsersUseCase } from '../../application/use-cases/auth/find-all-users.use-case.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly registerUser: RegisterUserUseCase,
+    private readonly validateUser: ValidateUserUseCase,
+    private readonly loginUser: LoginUserUseCase,
+    private readonly findAllUsers: FindAllUsersUseCase,
+    private readonly deleteUser: DeleteUserUseCase,
+    private readonly updateUser: UpdateUserUseCase,
+    private readonly changePasswords: ChangePasswordUseCase,
+  ) {}
 
-  @Post('login')
-  @ApiResponse({ status: 201, description: 'JWT generado' })
-  @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
-  async login(@Body() loginDto: LoginDto) {
-    const user = await this.authService.validateUser(
-      loginDto.username,
-      loginDto.password,
-    );
-
-    if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas');
-    }
-
-    return this.authService.login(user);
+  @Post('register')
+  @ApiResponse({ status: 201, description: 'Usuario registrado' })
+  @ApiResponse({ status: 409, description: 'Usuario ya existe' })
+  async register(@Body() dto: RegisterDto) {
+    return this.registerUser.execute(dto);
   }
 
-  @Post('register')
-  @ApiResponse({ status: 201, description: 'Usuario creado correctamente' })
-  @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.registerOrDuplicate(registerDto);
+  @Post('login')
+  @ApiResponse({ status: 201, description: 'Login exitoso' })
+  @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
+  async login(@Body() dto: LoginDto) {
+    const user = await this.validateUser.execute(dto.username, dto.password);
+    if (!user) throw new UnauthorizedException('Credenciales inválidas');
+    return this.loginUser.execute(user);
   }
 
   @Get('getAll')
   @ApiResponse({ status: 200, description: 'Lista de usuarios' })
-  async getAll() {
-    return this.authService.findAll();
+  getAll() {
+    return this.findAllUsers.execute();
   }
 
   @Delete('delete/:id')
   @ApiResponse({ status: 200, description: 'Usuario eliminado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   async delete(@Param('id', ParseObjectIdOrUuidPipe) id: string) {
-    const user = await this.authService.findById(id);
-    console.log(user.id === id);
-    if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
-    }
-    await this.authService.delete(id);
-    return user;
+    return this.deleteUser.execute(id);
   }
 
   @Put('update/:id')
   @ApiResponse({ status: 200, description: 'Usuario actualizado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  async update(
-    @Param('id', ParseObjectIdOrUuidPipe) id: string,
-    @Body() user: UpdateDto,
-  ) {
-    const userEntity = await this.authService.findById(id);
-    if (!userEntity) {
-      throw new NotFoundException('Usuario no encontrado');
-    }
+  async update(@Param('id', ParseObjectIdOrUuidPipe) id: string, @Body() dto: UpdateDto) {
+    return this.updateUser.execute(id, dto);
+  }
 
-    userEntity.username = user.username;
-    userEntity.role = user.role;
-
-    return this.authService.update(id, userEntity);
+  @Put(':id/change-password')
+  @ApiResponse({ status: 200, description: 'Contraseña actualizada' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+  async changePassword(@Param('id', ParseObjectIdOrUuidPipe) id: string, @Body() dto: ChangePasswordDto) {
+    return this.changePasswords.execute(id, dto.newPassword);
   }
 }
