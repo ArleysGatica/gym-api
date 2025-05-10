@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from '../../application/use-cases/auth.service';
 import { AuthController } from '../controllers/auth.controller';
 import { UserRepositoryImpl } from '../../infrastructure/database/repositories/user.repository.impl';
 import { JwtStrategy } from '../strategies/jwt.strategy';
@@ -44,7 +43,6 @@ import { ChangePasswordUseCase } from '../../application/use-cases/auth/change-p
       provide: LOGIN_REPOSITORY,
       useClass: UserRepositoryImpl,
     },
-    AuthService,
     JwtStrategy,
     JwtAuthGuard,
     RolesGuard,
