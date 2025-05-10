@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ProductRepository } from '../../../domain/interfaces/product.repository';
@@ -18,9 +14,7 @@ export class ProductRepositoryImpl implements ProductRepository {
   ) {}
 
   async create(product: ProductEntity): Promise<ProductEntity> {
-    const doc = await this.productModel.create(
-      ProductMapper.toPersistence(product),
-    );
+    const doc = await this.productModel.create(ProductMapper.toPersistence(product));
     return ProductMapper.toDomain(doc);
   }
 
@@ -34,16 +28,9 @@ export class ProductRepositoryImpl implements ProductRepository {
     return doc ? ProductMapper.toDomain(doc) : null;
   }
 
-  async update(
-    id: string,
-    product: Partial<ProductEntity>,
-  ): Promise<ProductEntity> {
+  async update(id: string, product: Partial<ProductEntity>): Promise<ProductEntity> {
     const doc = await this.productModel
-      .findByIdAndUpdate(
-        id,
-        ProductMapper.toPersistence(product as ProductEntity),
-        { new: true },
-      )
+      .findByIdAndUpdate(id, ProductMapper.toPersistence(product as ProductEntity), { new: true })
       .exec();
     if (!doc) throw new NotFoundException('Producto no encontrado');
     return ProductMapper.toDomain(doc);
@@ -54,10 +41,7 @@ export class ProductRepositoryImpl implements ProductRepository {
     if (!result) throw new NotFoundException('Producto no encontrado');
   }
 
-  async reduceStock(
-    productId: string,
-    quantity: number,
-  ): Promise<ProductEntity> {
+  async reduceStock(productId: string, quantity: number): Promise<ProductEntity> {
     const updated = await this.productModel.findOneAndUpdate(
       {
         _id: productId,
@@ -70,9 +54,7 @@ export class ProductRepositoryImpl implements ProductRepository {
     );
 
     if (!updated) {
-      throw new ConflictException(
-        'Stock insuficiente o producto no encontrado',
-      );
+      throw new ConflictException('Stock insuficiente o producto no encontrado');
     }
 
     return ProductMapper.toDomain(updated);

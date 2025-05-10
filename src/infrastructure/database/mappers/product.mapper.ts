@@ -11,13 +11,7 @@ export interface ProductPersistence {
 
 export class ProductMapper {
   static toDomain(doc: ProductDocument): ProductEntity {
-    return new ProductEntity(
-      doc._id,
-      doc.name,
-      doc.price,
-      doc.stock,
-      doc.category,
-    );
+    return new ProductEntity(doc._id, doc.name, doc.price, doc.stock, doc.category);
   }
 
   static toPersistence(entity: ProductEntity): ProductPersistence {
