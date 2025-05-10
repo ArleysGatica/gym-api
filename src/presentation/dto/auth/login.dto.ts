@@ -1,4 +1,5 @@
 import { ApiProperty, OmitType, PartialType } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class LoginDto {
   @ApiProperty({ example: 'admin', description: 'Nombre de usuario' })
@@ -26,6 +27,10 @@ export class RegisterDto {
   role: 'superroot' | 'admin';
 }
 
-export class UpdateDto extends PartialType(
-  OmitType(RegisterDto, ['password'] as const),
-) {}
+export class UpdateDto extends PartialType(OmitType(RegisterDto, ['password'] as const)) {}
+
+export class ChangePasswordDto {
+  @IsString()
+  @ApiProperty({ example: 'admin123', description: 'Contraseña nueva' })
+  newPassword: string;
+}

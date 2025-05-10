@@ -1,12 +1,12 @@
-// infrastructure/database/schemas/user.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type UserDocument = User & Document;
+@Schema({ _id: false, timestamps: true })
+export class UserDocument extends Document {
+  @Prop({ type: String, required: true })
+  _id: string;
 
-@Schema()
-export class User {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   username: string;
 
   @Prop({ required: true })
@@ -16,4 +16,4 @@ export class User {
   role: string;
 }
 
-export const AuthSchema = SchemaFactory.createForClass(User);
+export const AuthSchema = SchemaFactory.createForClass(UserDocument);
