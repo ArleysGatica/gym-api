@@ -1,6 +1,8 @@
 export class UserEntity {
-  id: string;
-  username: string;
-  password: string;
-  role: 'superroot' | 'admin';
+  constructor(
+    public readonly id: string,
+    public readonly username: string,
+    public readonly password: string,
+    public readonly role: string,
+  ) {}
 }

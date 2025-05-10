@@ -6,5 +6,6 @@ export abstract class UserRepository {
   abstract findById(id: string): Promise<UserEntity | null>;
   abstract update(id: string, user: Partial<UserEntity>): Promise<UserEntity>;
   abstract delete(id: string): Promise<any>;
+  abstract changePassword(id: string, password: string): Promise<UserEntity>;
   abstract findAll(): Promise<UserEntity[]>;
 }
