@@ -44,7 +44,7 @@ src/
 ⚙️ Instalación y Ejecución
 
 # 1. Clonar el repositorio
-git clone https://github.com/tuusuario/gym-api.git
+git clone https://github.com/ArleysGatica/gym-api
 cd gym-api
 
 # 2. Instalar dependencias
